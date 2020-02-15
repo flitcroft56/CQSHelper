@@ -14,25 +14,14 @@ namespace CQSHelper.CQSHelper
     {
 
         /// <summary>
-        /// Extention method for registering CQS types with the .net core dependency injection container
-        /// </summary>
-        /// <param name="services">Services to extend</param>
-        /// <param name="lifttime">Service life time of depenency</param>
-        public static void RegisterCQSTypes(this IServiceCollection services, ServiceLifetime lifetime = ServiceLifetime.Transient) {
-
-            services.Add(new ServiceDescriptor(typeof(IQuery), typeof(Query), lifetime));
-            services.Add(new ServiceDescriptor(typeof(ICommand), typeof(Command), lifetime));
-            services.Add(new ServiceDescriptor(typeof(IResult), typeof(Result), lifetime));
-            services.Add(new ServiceDescriptor(typeof(IDispatcher), typeof(Dispatcher), lifetime));
-        }
-
-        /// <summary>
         /// Extention method for scanning assmebly and auto registering any handlers created. <see cref="IQueryHandler{TQuery, TResult}"/>, <see cref="ICommandHandler{TCommand}"/>
         /// </summary>
         /// <param name="services"></param>
         /// <param name="assemblies"></param>
         /// <param name="lifetime"></param>
-        public static void AutoRegisterCQSHandlers(this IServiceCollection services, Assembly[] assemblies = null, ServiceLifetime lifetime = ServiceLifetime.Transient) {
+        public static void RegisterCQS(this IServiceCollection services, Assembly[] assemblies = null, ServiceLifetime lifetime = ServiceLifetime.Transient) {
+
+            services.Add(new ServiceDescriptor(typeof(IDispatcher), typeof(Dispatcher), lifetime));
 
             // if no assemblies passed through, default to just searching current assembly
             var assembliesToSearch = assemblies == null ? new[] { typeof(Dispatcher).Assembly } : assemblies;
