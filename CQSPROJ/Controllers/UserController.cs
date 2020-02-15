@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CQSHelper.Interfaces;
+using CQSPROJ.Commands;
 using CQSPROJ.CQSHelper;
 using CQSPROJ.Queries;
 using Microsoft.AspNetCore.Mvc;
@@ -23,5 +24,10 @@ namespace CQSPROJ.Controllers
         [HttpGet]
         public async Task<GetUserQueryResult> Get(GetUserQuery query) => 
             await _dispatcher.DispatchAsync<GetUserQuery, GetUserQueryResult>(query).ConfigureAwait(false);
+
+
+        [HttpPost]
+        public async Task Post(UserUpdateCommand command) =>
+            await _dispatcher.DispatchAsync(command).ConfigureAwait(false);
     }
 }

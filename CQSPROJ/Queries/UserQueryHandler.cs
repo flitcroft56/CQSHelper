@@ -1,4 +1,5 @@
 ﻿using CQSHelper.Interfaces;
+using CQSPROJ.CQSHelper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace CQSPROJ.Queries
 {
-    public class UserQueryHandler<TQuery, TResult> : IQueryHandler<GetUserQuery, GetUserQueryResult>
+    public class UserQueryHandler<TQuery, TResult> : QueryHandler<GetUserQuery, GetUserQueryResult>
     {
-        public async Task<GetUserQueryResult> ExecuteAsync(GetUserQuery query)
+        public override async Task<GetUserQueryResult> ExecuteAsync(GetUserQuery query)
         {
             GetUserQueryResult _result = new GetUserQueryResult()
             {

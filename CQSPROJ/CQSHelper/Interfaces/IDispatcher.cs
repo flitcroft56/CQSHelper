@@ -10,5 +10,8 @@ namespace CQSHelper.Interfaces
         public Task<TResult> DispatchAsync<TQuery, TResult>(TQuery query)
             where TQuery : IQuery
             where TResult : IResult;
+
+        public Task DispatchAsync<TCommand>(TCommand command)
+            where TCommand : ICommand;
     }
 }

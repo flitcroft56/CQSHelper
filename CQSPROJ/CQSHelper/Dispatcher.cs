@@ -30,10 +30,27 @@ namespace CQSHelper
             var queryHandler = _serviceProvider.GetService<IQueryHandler<TQuery, TResult>>();
 
             if (queryHandler == null)
-                throw new TypeLoadException($"No handler found for type: {query.GetType()}");
+                throw new TypeLoadException($"No handler found for query type: {query.GetType()}");
 
             return await queryHandler.ExecuteAsync(query);
 
+        }
+
+        /// <summary>
+        /// Dispatch a command asynchronously
+        /// </summary>
+        /// <typeparam name="TCommand">Command type to run</typeparam>
+        /// <param name="command">Command instance to run</param>
+        /// <returns></returns>
+        public async Task DispatchAsync<TCommand>(TCommand command) 
+            where TCommand : ICommand
+        {
+            var commandHandler = _serviceProvider.GetService <ICommandHandler<TCommand>>();
+
+            if (commandHandler == null)
+                throw new TypeLoadException($"No handler found for command type: {command.GetType()}");
+
+            await commandHandler.ExecuteAsync(command);
         }
     }
 }

@@ -21,12 +21,13 @@ namespace CQSHelper.CQSHelper
         public static void RegisterCQSTypes(this IServiceCollection services, ServiceLifetime lifetime = ServiceLifetime.Transient) {
 
             services.Add(new ServiceDescriptor(typeof(IQuery), typeof(Query), lifetime));
+            services.Add(new ServiceDescriptor(typeof(ICommand), typeof(Command), lifetime));
             services.Add(new ServiceDescriptor(typeof(IResult), typeof(Result), lifetime));
             services.Add(new ServiceDescriptor(typeof(IDispatcher), typeof(Dispatcher), lifetime));
         }
 
         /// <summary>
-        /// Extention method for scanning assmebly and auto registering any handlers created. <see cref="IQueryHandler{TQuery, TResult}"/>
+        /// Extention method for scanning assmebly and auto registering any handlers created. <see cref="IQueryHandler{TQuery, TResult}"/>, <see cref="ICommandHandler{TCommand}"/>
         /// </summary>
         /// <param name="services"></param>
         /// <param name="assemblies"></param>
@@ -36,12 +37,18 @@ namespace CQSHelper.CQSHelper
             // if no assemblies passed through, default to just searching current assembly
             var assembliesToSearch = assemblies == null ? new[] { typeof(Dispatcher).Assembly } : assemblies;
 
-            var typesFromAssemblies = assembliesToSearch.SelectMany(a => a.DefinedTypes.Where(t => t.ImplementedInterfaces.Any(i => i.Name == typeof(IQueryHandler<IQuery, IResult>).Name)));
+            // get types in defined assemblies where that implements ICommand or IQuery and IS NOT abstract
+            var typesFromAssemblies = assembliesToSearch.SelectMany(a => a.DefinedTypes.Where(t => t.ImplementedInterfaces.Any(i => (i.Name == typeof(IQueryHandler<,>).Name) || i.Name == typeof(ICommandHandler<>).Name) && !t.IsAbstract));
 
             // add any handlers found
             foreach (var type in typesFromAssemblies)
             {
-                services.Add(new ServiceDescriptor(typeof(IQueryHandler<,>), type, lifetime));
+                if (type.ImplementedInterfaces.Any(i => i.Name == typeof(IQueryHandler<,>).Name))
+                {
+                    services.Add(new ServiceDescriptor(typeof(IQueryHandler<,>), type, lifetime));
+                } else if (type.ImplementedInterfaces.Any(i => i.Name == typeof(ICommandHandler<>).Name)) {
+                    services.Add(new ServiceDescriptor(typeof(ICommandHandler<>), type, lifetime));
+                }
             }
         }
     }

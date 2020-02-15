@@ -6,13 +6,10 @@ using System.Threading.Tasks;
 
 namespace CQSPROJ.CQSHelper
 {
-    public class QueryHandler<TQuery, TResult> : IQueryHandler<TQuery, TResult>
+    public abstract class QueryHandler<TQuery, TResult> : IQueryHandler<TQuery, TResult>
         where TQuery : IQuery
         where TResult : IResult
     {
-        public Task<TResult> ExecuteAsync(TQuery query)
-        {
-            throw new Exception("Dick trapped in lift door");
-        }
+        public abstract Task<TResult> ExecuteAsync(TQuery query);
     }
 }
