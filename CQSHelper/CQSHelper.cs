@@ -1,9 +1,12 @@
 ﻿using CQSHelper.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
-namespace CQSHelper.CQSHelper
+namespace CQSHelper
 {
     public static class CQSHelper
     {
@@ -21,17 +24,23 @@ namespace CQSHelper.CQSHelper
             // if no assemblies passed through, default to just searching current assembly
             var assembliesToSearch = assemblies == null ? new[] { typeof(Dispatcher).Assembly } : assemblies;
 
-            // get types in defined assemblies where that implements ICommand or IQuery and IS NOT abstract
+            // get types in defined assemblies where that implements ICommandHandler or IQueryHandler and IS NOT abstract
             var typesFromAssemblies = assembliesToSearch.SelectMany(a => a.DefinedTypes.Where(t => t.ImplementedInterfaces.Any(i => (i.Name == typeof(IQueryHandler<,>).Name) || i.Name == typeof(ICommandHandler<>).Name) && !t.IsAbstract));
 
             // add any handlers found
             foreach (var type in typesFromAssemblies)
             {
+                // If query
                 if (type.ImplementedInterfaces.Any(i => i.Name == typeof(IQueryHandler<,>).Name))
                 {
-                    services.Add(new ServiceDescriptor(typeof(IQueryHandler<,>), type, lifetime));
-                } else if (type.ImplementedInterfaces.Any(i => i.Name == typeof(ICommandHandler<>).Name)) {
-                    services.Add(new ServiceDescriptor(typeof(ICommandHandler<>), type, lifetime));
+                    var interfaceType = type.ImplementedInterfaces.First(v => v.Name == typeof(IQueryHandler<,>).Name);
+                    services.Add(new ServiceDescriptor(interfaceType, type, lifetime));
+                } 
+                // if command
+                else if (type.ImplementedInterfaces.Any(i => i.Name == typeof(ICommandHandler<>).Name))
+                {
+                    var interfaceType = type.ImplementedInterfaces.First(v => v.Name == typeof(ICommandHandler<>).Name);
+                    services.Add(new ServiceDescriptor(interfaceType, type, lifetime));
                 }
             }
         }
