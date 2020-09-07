@@ -22,14 +22,14 @@ ConfigureServices function:
   
 
     // CQS stuff
-    services.RegisterCQS(null, ServiceLifetime.Scoped);
+    services.AddCQS(null, ServiceLifetime.Scoped);
 
 The "RegisterCQS" extension method takes 2 param, the lifetime of the dependencies, and the assembly to collect the interface references from. defaults to the location of the CQSHelper library if left null. 
 
 ## Creating Queries
 Query Example:
 
-    public class UserByIdQuery : Query
+    public class UserByIdQuery : IQuery
     {
         public UserByIdQuery(string id) {
             this.Id = id;
@@ -38,7 +38,7 @@ Query Example:
         public string Id { get; set; }
     }
 
-    public class UserByIdQueryResult : Result
+    public class UserByIdQueryResult : IResult
     {
         public User User { get; set; }
 
@@ -66,7 +66,7 @@ Query Handler Example:
 ## Creating Commands
 Command example:
 
-    public class AddUserCommand : Command
+    public class AddUserCommand : ICommand
     {
         public string UserId{ get; set; }
         public string Name{ get; set; }
@@ -75,7 +75,7 @@ Command example:
 
 Command Handler Example:
 
-    public class AddUserCommandHandler : CommandHandler<AddUserCommand>
+    public class AddUserCommandHandler : ICommandHandler<AddUserCommand>
     {
         private readonly IUserRepository _userRespository;
 

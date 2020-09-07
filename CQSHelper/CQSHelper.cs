@@ -17,7 +17,7 @@ namespace CQSHelper
         /// <param name="services"></param>
         /// <param name="assemblies"></param>
         /// <param name="lifetime"></param>
-        public static void RegisterCQS(this IServiceCollection services, Assembly[] assemblies = null, ServiceLifetime lifetime = ServiceLifetime.Transient) {
+        public static void AddCqs(this IServiceCollection services, Assembly[] assemblies = null, ServiceLifetime lifetime = ServiceLifetime.Transient) {
 
             services.Add(new ServiceDescriptor(typeof(IDispatcher), typeof(Dispatcher), lifetime));
 
