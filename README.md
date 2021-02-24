@@ -22,7 +22,7 @@ ConfigureServices function:
   
 
     // CQS stuff
-    services.AddCQS(null, ServiceLifetime.Scoped);
+    services.UseCQSHelper(null, ServiceLifetime.Scoped);
 
 The "RegisterCQS" extension method takes 2 param, the lifetime of the dependencies, and the assembly to collect the interface references from. defaults to the location of the CQSHelper library if left null. 
 
